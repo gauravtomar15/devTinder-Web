@@ -11,6 +11,7 @@ const Login = () => {
   const [password, setPassword] = useState("Gaurav@123");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [error,setError] = useState("");
 
 
   const handleClick = async ()=>{
@@ -25,7 +26,7 @@ const Login = () => {
     dispatch(addUser(result.data));
     navigate("/feed")
    } catch (err) {
-    console.log(err.message);
+    setError(err?.response?.data);
    }
   }
   return (
@@ -87,9 +88,9 @@ const Login = () => {
               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
               title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
             />
+          
           </label>
-         
-
+            <p className="text-red-500">{error}</p>
           <div className="card-actions justify-center">
             <button className="btn btn-primary " onClick={handleClick}>Login</button>
           </div>

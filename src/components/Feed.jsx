@@ -22,11 +22,11 @@ const Feed = () => {
   useEffect(()=>{
     getData();
   },[])
-  
+  if(!feed) return;
 
   return feed && (
     <div>
-      <UserCard user={feed[0]}/>
+      {feed.map((res)=><UserCard key={res._id} user={res}/>)}
     </div>
   )
 }

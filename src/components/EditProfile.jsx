@@ -11,6 +11,7 @@ const EditProfile = ({ user }) => {
   const [age, setAge] = useState(user.age);
   const [gender, setGender] = useState(user.gender);
   const [about, setAbout] = useState(user.about);
+  const [photoUrl , setPhotourl] = useState(user.photoUrl)
   const [error, setError] = useState("");
   const [showToast, setShowToast] = useState(false);
   const dispatch = useDispatch();
@@ -120,7 +121,7 @@ const EditProfile = ({ user }) => {
           </div>
         </div>
       </div>
-      <UserCard user={{ firstName, lastName, age, gender, about }} />
+      <UserCard user={{ firstName, lastName, age, gender, about , photoUrl }} />
 
       {showToast && (
         <div className="toast toast-top toast-center ">

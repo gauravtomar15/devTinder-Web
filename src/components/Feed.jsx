@@ -24,13 +24,13 @@ const Feed = () => {
     getData();
   }, []);
   if (!feed) return;
-
+  if(feed.length <=0) return <h1 className="text-3xl m-1 p-1 font-bold text-center"> No New User Found !!</h1>
   return (
     feed && (
       <div>
-        {feed.map((res) => (
-          <UserCard key={res._id} user={res} />
-        ))}
+        
+          <UserCard user={feed[0]} />
+       
       </div>
     )
   );

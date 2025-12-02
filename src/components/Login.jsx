@@ -1,34 +1,36 @@
 import React, { useState } from "react";
-import axios from 'axios';
+import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 
 const Login = () => {
-
   const [email, setEmailId] = useState("gaurav@gmail.com");
   const [password, setPassword] = useState("Gaurav@123");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [error,setError] = useState("");
+  const [error, setError] = useState("");
 
-
-  const handleClick = async ()=>{
-   try {
-    console.log("clicked")
-      const result = await axios.post(BASE_URL+"/login", {
-      email,
-      password
-    }, {
-      withCredentials: true
-    })
-    dispatch(addUser(result.data));
-    return navigate("/")
-   } catch (err) {
-    setError(err?.response?.data);
-   }
-  }
+  const handleClick = async () => {
+    try {
+      console.log("clicked");
+      const result = await axios.post(
+        BASE_URL + "/login",
+        {
+          email,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      dispatch(addUser(result.data));
+      return navigate("/");
+    } catch (err) {
+      setError(err?.response?.data);
+    }
+  };
   return (
     <div className="flex justify-center my-10">
       <div className="card bg-base-300 w-96 shadow-sm ">
@@ -56,12 +58,12 @@ const Login = () => {
               required
               placeholder="Email ID"
               value={email}
-              onChange={(e)=> setEmailId(e.target.value)}
+              onChange={(e) => setEmailId(e.target.value)}
               pattern="[A-Za-z][A-Za-z0-9\-]*"
               title="Only letters, numbers or dash"
             />
           </label>
-        
+
           <label className="input validator">
             <svg
               className="h-[1em] opacity-50"
@@ -84,15 +86,16 @@ const Login = () => {
               required
               placeholder="Password"
               value={password}
-              onChange={(e)=> setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
               title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
             />
-          
           </label>
-            <p className="text-red-500">{error}</p>
+          <p className="text-red-500">{error}</p>
           <div className="card-actions justify-center">
-            <button className="btn btn-primary " onClick={handleClick}>Login</button>
+            <button className="btn btn-primary " onClick={handleClick}>
+              Login
+            </button>
           </div>
         </div>
       </div>

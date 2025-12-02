@@ -6,13 +6,16 @@ import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 
 const Login = () => {
-  const [email, setEmailId] = useState("gaurav@gmail.com");
-  const [password, setPassword] = useState("Gaurav@123");
+  const [email, setEmailId] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName , setFirstName] = useState("");
+  const [lastName , setLastName] = useState("");
+  const [isLoggin , setIsLogin] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
-  const handleClick = async () => {
+  const handleLogin = async () => {
     try {
       console.log("clicked");
       const result = await axios.post(
@@ -31,11 +34,39 @@ const Login = () => {
       setError(err?.response?.data);
     }
   };
+  const handleSignUp = async ()=>{
+    try {
+      const res = await axios.post(BASE_URL+"/signUp",{firstName,lastName,email,password},{withCredentials: true});
+      console.log(res.data)
+      dispatch(addUser(res.data))
+      return navigate("/profile");
+    } catch (err) {
+      console.error(err.message)
+    }
+  }
   return (
-    <div className="flex justify-center my-10">
+    <div className="flex justify-center m-8">
       <div className="card bg-base-300 w-96 shadow-sm ">
-        <div className="card-body items-center gap-10">
-          <h2 className="card-title ">Login</h2>
+        <div className="card-body items-center gap-6">
+          <h2 className="card-title font-bold text-lg ">{isLoggin?"Login": "SignUp"}</h2>
+          {!isLoggin &&<><label className="form-control w-full max-w-xs">    
+                  <input
+                  placeholder="First Name:"
+                    type="text"
+                    value={firstName}
+                    className="input input-bordered w-full max-w-xs"
+                    onChange={(e) => setFirstName(e.target.value)}
+                  />
+                </label>
+                <label className="form-control w-full max-w-xs"> 
+                  <input
+                  placeholder="Last Name:"
+                    type="text"
+                    value={lastName}
+                    className="input input-bordered w-full max-w-xs"
+                    onChange={(e) => setLastName(e.target.value)}
+                  />
+                </label></> }
           <label className="input validator">
             <svg
               className="h-[1em] opacity-50"
@@ -93,10 +124,16 @@ const Login = () => {
           </label>
           <p className="text-red-500">{error}</p>
           <div className="card-actions justify-center">
-            <button className="btn btn-primary " onClick={handleClick}>
-              Login
+            <button className="btn btn-primary " onClick={isLoggin?handleLogin:handleSignUp}>
+              {isLoggin?"Login":"SignUp"}
             </button>
+           
           </div>
+           <p className="cursor-pointer text-lg font-bold" onClick={()=>setIsLogin((value)=> !value)}>
+              {
+                isLoggin?"New User? SignUp Here":"Existing User Login"
+              }
+            </p>
         </div>
       </div>
     </div>

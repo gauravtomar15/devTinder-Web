@@ -8,10 +8,10 @@ import { addUser } from "../utils/userSlice";
 const EditProfile = ({ user }) => {
   const [firstName, setFirstName] = useState(user.firstName);
   const [lastName, setLastName] = useState(user.lastName);
-  const [age, setAge] = useState(user.age || "");
-  const [gender, setGender] = useState(user.gender|| "");
+  const [age, setAge] = useState(user.age );
+  const [gender, setGender] = useState(user.gender);
   const [about, setAbout] = useState(user.about);
-  const [photoUrl , setPhotourl] = useState(user.photoUrl || "")
+  const [photoUrl , setPhotourl] = useState(user.photoUrl )
   const [error, setError] = useState("");
   const [showToast, setShowToast] = useState(false);
   const dispatch = useDispatch();
@@ -38,7 +38,7 @@ const EditProfile = ({ user }) => {
 
   return (
     <div className="flex mx-10 my-10">
-      <div className="flex justify-center ">
+      <div className="flex justify-center my-10 ">
         <div className="flex justify-center mx-10">
           <div className="card bg-base-300 w-96 shadow-xl">
             <div className="card-body">
@@ -67,15 +67,15 @@ const EditProfile = ({ user }) => {
                       onChange={(e) => setLastName(e.target.value)}
                     />
                   </label>
-                  {/* <div className="label">
-                    <span className="label-text">Photo URL :</span>
-                  </div>
-                  <input
-                    type="text"
-                    value={photoUrl}
-                    className="input input-bordered w-full max-w-xs"
-                    onChange={(e) => setPhotoUrl(e.target.value)}
-                  /> */}
+               <div className="label">
+                <span className="label-text">Photo URL :</span>
+              </div>
+              <input
+                type="text"
+                value={photoUrl}
+                className="input input-bordered w-full max-w-xs"
+                onChange={(e) => setPhotourl(e.target.value)}
+              /> 
                 </label>
                 <label className="form-control w-full max-w-xs my-2">
                   <div className="label">

@@ -21,22 +21,21 @@ const UserCard = ({ user }) => {
 
   return (
     user && (
-      <div className="flex justify-center m-4 ">
-        <div className="card bg-base-200 w-96 shadow-sm ">
-          <figure>
-            <img className="h-50 w-50" src={photoUrl} alt="logo" />
+      <div className="flex justify-center  my-10 ">
+        <div className="card bg-base-200 h-110 w-auto  shadow-sm mx-8 px-8">
+          <figure className=" object-cover mt-6 ">
+            <img className="h-60 w-auto   rounded-2xl" src={photoUrl} alt="logo" />
           </figure>
-          <div className="card-body">
-            <h2 className="card-title">{firstName + " " + lastName}</h2>
+          <div className=" my-2">
+            <h2 className="card-title ">{firstName + " " + lastName}</h2>
             <p>{about}</p>
             {age && <p>{age}</p>}
             {gender && <p>{gender}</p>}
-
-            <div className="card-actions justify-center gap-20 m-4 ">
+          </div>
+           <div className="card-actions justify-center gap-11 mt-8 ">
               <button className="btn btn-primary" onClick={()=> handleFeed("ignored",_id)}>ignored</button>
               <button className="btn btn-secondary" onClick={()=> handleFeed("interested",_id)}>intreseted</button>
             </div>
-          </div>
         </div>
       </div>
     )

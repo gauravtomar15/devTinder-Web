@@ -12,6 +12,7 @@ const Feed = () => {
 
   const getData = async () => {
     try {
+      
       const res = await axios.get(BASE_URL + "/feed", {
         withCredentials: true,
       });
@@ -24,7 +25,7 @@ const Feed = () => {
     getData();
   }, []);
   if (!feed) return;
-  if(feed.length <=0) return <h1 className="text-3xl m-1 p-1 font-bold text-center"> No New User Found !!</h1>
+  if(feed.length <=0) return <h1 className="text-xl sm:text-2xl md:text-3xl m-2 sm:m-4 p-2 sm:p-4 font-bold text-center"> No New User Found !!</h1>
   return (
     feed && (
       <div>

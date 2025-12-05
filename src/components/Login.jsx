@@ -45,16 +45,16 @@ const Login = () => {
     }
   }
   return (
-    <div className="flex justify-center m-8">
-      <div className="card bg-base-300 w-96 shadow-sm ">
-        <div className="card-body items-center gap-6">
-          <h2 className="card-title font-bold text-lg ">{isLoggin?"Login": "SignUp"}</h2>
+    <div className="flex justify-center m-4 sm:m-6 md:m-8 px-2 sm:px-4">
+      <div className="card bg-base-300 w-full max-w-sm sm:max-w-md md:w-96 shadow-sm">
+        <div className="card-body items-center gap-4 sm:gap-5 md:gap-6">
+          <h2 className="card-title font-bold text-base sm:text-lg md:text-xl">{isLoggin?"Login": "SignUp"}</h2>
           {!isLoggin &&<><label className="form-control w-full max-w-xs">    
                   <input
                   placeholder="First Name:"
                     type="text"
                     value={firstName}
-                    className="input input-bordered w-full max-w-xs"
+                    className="input input-bordered w-full max-w-xs text-sm sm:text-base"
                     onChange={(e) => setFirstName(e.target.value)}
                   />
                 </label>
@@ -63,11 +63,11 @@ const Login = () => {
                   placeholder="Last Name:"
                     type="text"
                     value={lastName}
-                    className="input input-bordered w-full max-w-xs"
+                    className="input input-bordered w-full max-w-xs text-sm sm:text-base"
                     onChange={(e) => setLastName(e.target.value)}
                   />
                 </label></> }
-          <label className="input validator">
+          <label className="input validator w-full max-w-xs">
             <svg
               className="h-[1em] opacity-50"
               xmlns="http://www.w3.org/2000/svg"
@@ -92,10 +92,11 @@ const Login = () => {
               onChange={(e) => setEmailId(e.target.value)}
               pattern="[A-Za-z][A-Za-z0-9\-]*"
               title="Only letters, numbers or dash"
+              className="text-sm sm:text-base"
             />
           </label>
 
-          <label className="input validator">
+          <label className="input validator w-full max-w-xs">
             <svg
               className="h-[1em] opacity-50"
               xmlns="http://www.w3.org/2000/svg"
@@ -120,16 +121,17 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
               title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
+              className="text-sm sm:text-base"
             />
           </label>
-          <p className="text-red-500">{error}</p>
-          <div className="card-actions justify-center">
-            <button className="btn btn-primary " onClick={isLoggin?handleLogin:handleSignUp}>
+          <p className="text-red-500 text-xs sm:text-sm text-center">{error}</p>
+          <div className="card-actions justify-center w-full">
+            <button className="btn btn-primary w-full sm:w-auto text-sm sm:text-base px-6" onClick={isLoggin?handleLogin:handleSignUp}>
               {isLoggin?"Login":"SignUp"}
             </button>
            
           </div>
-           <p className="cursor-pointer text-lg font-bold" onClick={()=>setIsLogin((value)=> !value)}>
+           <p className="cursor-pointer text-sm sm:text-base md:text-lg font-bold text-center" onClick={()=>setIsLogin((value)=> !value)}>
               {
                 isLoggin?"New User? SignUp Here":"Existing User Login"
               }

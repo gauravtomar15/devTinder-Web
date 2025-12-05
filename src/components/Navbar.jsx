@@ -21,44 +21,49 @@ const Navbar = () => {
   };
 
   return (
-    <div className="navbar bg-base-100 shadow-sm">
+    <div className="navbar bg-base-100 shadow-sm px-2 sm:px-4 md:px-6">
       <div className="flex-1">
-        <Link to="/" className="btn btn-ghost text-xl">
+        <Link to="/" className="btn btn-ghost text-base sm:text-lg md:text-xl">
           🔥 DevTinder
         </Link>
       </div>
       {user && (
-        <div className="flex gap-2">
-          {" "}
-          Welcome, {user.firstName}
-          <div className="dropdown dropdown-end mx-6">
+        <div className="flex items-center gap-1 sm:gap-2">
+          <span className="hidden sm:inline text-xs sm:text-sm md:text-base">
+            Welcome, {user.firstName}
+          </span>
+          <div className="dropdown dropdown-end mx-2 sm:mx-4 md:mx-6">
             <div
               tabIndex={0}
               role="button"
               className="btn btn-ghost btn-circle avatar"
             >
-              <div className="w-10 rounded-full">
-                <img alt="Tailwind CSS Navbar component" src={user.photoUrl} />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full">
+                <img 
+                  alt="User avatar" 
+                  src={user.photoUrl}
+                  className="w-full h-full object-cover rounded-full"
+                />
               </div>
             </div>
             <ul
               tabIndex="-1"
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-48 sm:w-52 p-2 shadow"
             >
               <li>
-                <Link to="/profile" className="justify-between">
+                <Link to="/profile" className="justify-between text-sm sm:text-base">
                   Profile
-                  <span className="badge">New</span>
+                  <span className="badge badge-sm">New</span>
                 </Link>
               </li>
               <li>
-                <Link to={"/connections"}>Connections</Link>
+                <Link to={"/connections"} className="text-sm sm:text-base">Connections</Link>
               </li>
               <li>
-                <Link to={"/requests"}>Requests</Link>
+                <Link to={"/requests"} className="text-sm sm:text-base">Requests</Link>
               </li>
               <li>
-                <Link to="/login" onClick={handleLogout}>
+                <Link to="/login" onClick={handleLogout} className="text-sm sm:text-base">
                   Logout
                 </Link>
               </li>

@@ -21,20 +21,38 @@ const UserCard = ({ user }) => {
 
   return (
     user && (
-      <div className="flex justify-center  my-10 ">
-        <div className="card bg-base-200 h-110 w-auto  shadow-sm mx-8 px-8">
-          <figure className=" object-cover mt-6 ">
-            <img className="h-60 w-auto   rounded-2xl" src={photoUrl} alt="logo" />
+      <div className="flex justify-center my-4 sm:my-6 px-2 sm:px-4">
+        <div className="card bg-base-200 w-[320px] sm:w-[360px] md:w-[400px] shadow-sm mx-2 sm:mx-4 px-3 sm:px-4 md:px-6 py-3 sm:py-4 flex flex-col">
+          <figure className="mt-2 sm:mt-3 w-full h-[200px] sm:h-[240px] md:h-[280px] overflow-hidden rounded-xl flex-shrink-0">
+            <img 
+              className="w-full h-full object-cover rounded-xl" 
+              src={photoUrl} 
+              alt={`${firstName} ${lastName}`}
+            />
           </figure>
-          <div className=" my-2">
-            <h2 className="card-title ">{firstName + " " + lastName}</h2>
-            <p>{about}</p>
-            {age && <p>{age}</p>}
-            {gender && <p>{gender}</p>}
+          <div className="my-2 sm:my-3 flex-shrink-0">
+            <h2 className="card-title text-base sm:text-lg md:text-xl mb-1 sm:mb-2">{firstName + " " + lastName}</h2>
+            <div className="min-h-[40px] sm:min-h-[48px] md:min-h-[56px]">
+              <p className="text-xs sm:text-sm md:text-base mb-1 sm:mb-2 line-clamp-2">{about || "No description available"}</p>
+            </div>
+            <div className="flex gap-3 text-xs sm:text-sm text-base-content/70">
+              {age && <p>Age: {age}</p>}
+              {gender && <p>Gender: {gender}</p>}
+            </div>
           </div>
-           <div className="card-actions justify-center gap-11 mt-8 ">
-              <button className="btn btn-primary" onClick={()=> handleFeed("ignored",_id)}>ignored</button>
-              <button className="btn btn-secondary" onClick={()=> handleFeed("interested",_id)}>intreseted</button>
+           <div className="card-actions justify-center gap-3 sm:gap-4 md:gap-6 mt-auto">
+              <button 
+                className="btn btn-primary btn-sm sm:btn-md text-xs sm:text-sm px-3 sm:px-4 min-w-[70px] sm:min-w-[80px]" 
+                onClick={()=> handleFeed("ignored",_id)}
+              >
+                Ignored
+              </button>
+              <button 
+                className="btn btn-secondary btn-sm sm:btn-md text-xs sm:text-sm px-3 sm:px-4 min-w-[70px] sm:min-w-[80px]" 
+                onClick={()=> handleFeed("interested",_id)}
+              >
+                Interested
+              </button>
             </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,7 +7,7 @@ import UserCard from "./UserCard";
 
 const Feed = () => {
   const feed = useSelector((store) => store.feed);
-  console.log(feed);
+  const [showToast , setShowToast] = useState(false);
   const dispatch = useDispatch();
 
   const getData = async () => {
@@ -17,6 +17,8 @@ const Feed = () => {
         withCredentials: true,
       });
       dispatch(addFeed(res?.data));
+      setShowToast(true);
+      setTimeout(()=>{setShowToast(false)},2000)
     } catch (err) {
       console.error(err);
     }
@@ -31,6 +33,13 @@ const Feed = () => {
       <div>
         
           <UserCard user={feed[0]} />
+          
+       { showToast && ( <div className="toast toast-top toast-center ">
+          <div className="alert alert-success">
+            <span>Login Successfull</span>
+          </div>
+        </div>)}
+   
        
       </div>
     )

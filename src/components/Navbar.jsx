@@ -63,6 +63,9 @@ const Navbar = () => {
                 <Link to={"/requests"} className="text-sm sm:text-base">Requests</Link>
               </li>
               <li>
+                <Link to={"/payment/create"} className="text-sm sm:text-base">Premium</Link>
+              </li>
+              <li>
                 <Link to="/login" onClick={handleLogout} className="text-sm sm:text-base">
                   Logout
                 </Link>

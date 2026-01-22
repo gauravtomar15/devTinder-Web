@@ -8,9 +8,9 @@ import { BASE_URL } from "../utils/constants";
 const Login = () => {
   const [email, setEmailId] = useState("");
   const [password, setPassword] = useState("");
-  const [firstName , setFirstName] = useState("");
-  const [lastName , setLastName] = useState("");
-  const [isLoggin , setIsLogin] = useState(true);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [isLoggin, setIsLogin] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -27,7 +27,7 @@ const Login = () => {
         },
         {
           withCredentials: true,
-        }
+        },
       );
       dispatch(addUser(result.data));
       return navigate("/");
@@ -35,39 +35,49 @@ const Login = () => {
       setError(err?.response?.data);
     }
   };
-  const handleSignUp = async ()=>{
+  const handleSignUp = async () => {
     try {
-      const res = await axios.post(BASE_URL+"/signUp",{firstName,lastName,email,password},{withCredentials: true});
-      console.log(res.data)
-      dispatch(addUser(res.data))
+      const res = await axios.post(
+        BASE_URL + "/signUp",
+        { firstName, lastName, email, password },
+        { withCredentials: true },
+      );
+      console.log(res.data);
+      dispatch(addUser(res.data));
       return navigate("/profile");
     } catch (err) {
-      console.error(err.message)
+      console.error(err.message);
     }
-  }
+  };
   return (
     <div className="flex justify-center m-4 sm:m-6 md:m-8 px-2 sm:px-4">
       <div className="card bg-base-300 w-full max-w-sm sm:max-w-md md:w-96 shadow-sm">
         <div className="card-body items-center gap-4 sm:gap-5 md:gap-6">
-          <h2 className="card-title font-bold text-base sm:text-lg md:text-xl">{isLoggin?"Login": "SignUp"}</h2>
-          {!isLoggin &&<><label className="form-control w-full max-w-xs">    
-                  <input
+          <h2 className="card-title font-bold text-base sm:text-lg md:text-xl">
+            {isLoggin ? "Login" : "SignUp"}
+          </h2>
+          {!isLoggin && (
+            <>
+              <label className="form-control w-full max-w-xs">
+                <input
                   placeholder="First Name:"
-                    type="text"
-                    value={firstName}
-                    className="input input-bordered w-full max-w-xs text-sm sm:text-base"
-                    onChange={(e) => setFirstName(e.target.value)}
-                  />
-                </label>
-                <label className="form-control w-full max-w-xs"> 
-                  <input
+                  type="text"
+                  value={firstName}
+                  className="input input-bordered w-full max-w-xs text-sm sm:text-base"
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+              </label>
+              <label className="form-control w-full max-w-xs">
+                <input
                   placeholder="Last Name:"
-                    type="text"
-                    value={lastName}
-                    className="input input-bordered w-full max-w-xs text-sm sm:text-base"
-                    onChange={(e) => setLastName(e.target.value)}
-                  />
-                </label></> }
+                  type="text"
+                  value={lastName}
+                  className="input input-bordered w-full max-w-xs text-sm sm:text-base"
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+              </label>
+            </>
+          )}
           <label className="input validator w-full max-w-xs">
             <svg
               className="h-[1em] opacity-50"
@@ -127,16 +137,27 @@ const Login = () => {
           </label>
           <p className="text-red-500 text-xs sm:text-sm text-center">{error}</p>
           <div className="card-actions justify-center w-full">
-            <button className="btn btn-primary w-full sm:w-auto text-sm sm:text-base px-6" onClick={isLoggin?handleLogin:handleSignUp}>
-              {isLoggin?"Login":"SignUp"}
+            <button
+              className="btn btn-primary w-full sm:w-auto text-sm sm:text-base px-6"
+              onClick={isLoggin ? handleLogin : handleSignUp}
+            >
+              {isLoggin ? "Login" : "SignUp"}
             </button>
-           
           </div>
-           <p className="cursor-pointer text-sm sm:text-base md:text-lg font-bold text-center" onClick={()=>setIsLogin((value)=> !value)}>
-              {
-                isLoggin?"New User? SignUp Here":"Existing User Login"
-              }
-            </p>
+          <p
+            className="cursor-pointer text-sm sm:text-base md:text-lg font-bold text-center"
+            onClick={() => setIsLogin((value) => !value)}
+          >
+            {isLoggin ? (
+              <div>
+                New User? <span className="text-red-500">SignUp Here</span>
+              </div>
+            ) : (
+              <div>
+                Existing User <span className="text-red-500">Login Here</span>
+              </div>
+            )}
+          </p>
         </div>
       </div>
     </div>

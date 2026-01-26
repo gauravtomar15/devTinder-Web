@@ -47,41 +47,61 @@ const Razorpay = () => {
     rzp.open();
   };
   return isPremiumVerify? ( "you are already premium user") : (
-    <div className="m-10">
-      <div className="flex w-full">
-        <div className="card bg-base-300 rounded-box grid h-80 grow place-items-center">
-          <h1 className="font-bold text-3xl">Silver Membership</h1>
-          <ul>
-            <li>-chat with your connections</li>
-            <li>-blue tick</li>
-            <li>-100 connections request send in one day</li>
-            <li>-happy</li>
-          </ul>
-          <button
-            onClick={() => handleClickPayment("silver")}
-            className="btn btn-secondary"
-          >
-            Buy Silver
-          </button>
-        </div>
-        <div className="divider divider-horizontal">OR</div>
-        <div className="card bg-base-300 rounded-box grid h-80 grow place-items-center">
-          <h1 className="font-bold text-3xl">Golden Membership</h1>
-          <ul>
-            <li>-chat with your connections</li>
-            <li>-blue tick</li>
-            <li>-infinite connections request send in one day</li>
-            <li>-very happy</li>
-          </ul>
-          <button
-            onClick={() => handleClickPayment("gold")}
-            className="btn btn-primary"
-          >
-            Buy Golden
-          </button>
-        </div>
+    <div className="m-4 sm:m-8 lg:m-10">
+  <div className="flex flex-col lg:flex-row w-full gap-6">
+    
+    {/* Silver Card */}
+    <div className="card bg-base-300 rounded-box flex flex-col justify-between p-6 sm:p-8 h-auto lg:h-80">
+      <div className="space-y-4 text-center">
+        <h1 className="font-bold text-xl sm:text-2xl lg:text-3xl">
+          Silver Membership
+        </h1>
+
+        <ul className="text-sm sm:text-base text-left list-disc list-inside space-y-1">
+          <li>One-to-one messaging with your connections</li>
+          <li>Verified profile badge (Blue Tick)</li>
+          <li>Up to 100 connection requests per day</li>
+          <li>Standard priority support</li>
+        </ul>
       </div>
+
+      <button
+        onClick={() => handleClickPayment("silver")}
+        className="btn btn-secondary mt-6 w-full sm:w-auto self-center"
+      >
+        Buy Silver
+      </button>
     </div>
+
+    {/* Divider */}
+    <div className="hidden lg:flex divider divider-horizontal">OR</div>
+
+    {/* Golden Card */}
+    <div className="card bg-base-300 rounded-box flex flex-col justify-between p-6 sm:p-8 h-auto lg:h-80">
+      <div className="space-y-4 text-center">
+        <h1 className="font-bold text-xl sm:text-2xl lg:text-3xl">
+          Golden Membership
+        </h1>
+
+        <ul className="text-sm sm:text-base text-left list-disc list-inside space-y-1">
+          <li>Unlimited messaging with your connections</li>
+          <li>Verified profile badge (Blue Tick)</li>
+          <li>Unlimited connection requests per day</li>
+          <li>High-priority support & visibility boost</li>
+        </ul>
+      </div>
+
+      <button
+        onClick={() => handleClickPayment("gold")}
+        className="btn btn-primary mt-6 w-full sm:w-auto self-center"
+      >
+        Buy Golden
+      </button>
+    </div>
+
+  </div>
+</div>
+
   );
 };
 

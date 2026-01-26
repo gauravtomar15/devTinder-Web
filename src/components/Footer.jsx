@@ -4,6 +4,7 @@ const Footer = () => {
   return (
     <footer className="footer footer-center sm:footer-horizontal bg-neutral text-neutral-content items-center p-3 sm:p-4 mt-auto">
       <aside className="grid-flow-col items-center gap-2 sm:gap-4">
+        
         <svg
           width="28"
           height="28"
@@ -21,6 +22,7 @@ const Footer = () => {
       </aside>
       <nav className="grid-flow-col gap-2 sm:gap-4 md:place-self-center md:justify-self-end">
         <a className="hover:opacity-80 transition-opacity">
+           
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"

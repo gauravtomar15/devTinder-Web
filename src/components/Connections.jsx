@@ -3,6 +3,7 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addConnection } from "../utils/connectionSlice";
+import { Link } from "react-router-dom";
 
 const Connections = () => {
   const connections = useSelector((store) => store.connection);
@@ -39,7 +40,7 @@ const Connections = () => {
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-7xl mx-auto">
         {connections.map((connection, index) => {
-          const { firstName, lastName, age, about, photoUrl } = connection;
+          const {_id, firstName, lastName, age, about, photoUrl } = connection;
 
           return (
             <div
@@ -74,6 +75,9 @@ const Connections = () => {
                 )}
                 <p className="text-xs sm:text-sm md:text-base">{about}</p>
               </div>
+             <Link to={"/chat/" + _id }>
+               <button className="btn btn-primary btn-sm mt-2">Chat</button>
+             </Link>
             </div>
           );
         })}

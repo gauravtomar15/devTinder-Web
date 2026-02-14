@@ -101,7 +101,6 @@ const Login = () => {
               placeholder="Email ID"
               value={email}
               onChange={(e) => setEmailId(e.target.value)}
-              pattern="[A-Za-z][A-Za-z0-9\-]*"
               title="Only letters, numbers or dash"
               className="text-sm sm:text-base"
             />
@@ -130,7 +129,7 @@ const Login = () => {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
               title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
               className="text-sm sm:text-base"
             />

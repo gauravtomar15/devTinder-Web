@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { createSocketConnection } from "../utils/socket";
 import { useSelector } from "react-redux";
+import axios from "axios";
+import { BASE_URL } from "../utils/constants";
 
 const Chat = () => {
   const { targetUserId } = useParams();
@@ -13,6 +15,24 @@ const Chat = () => {
   const userId = user?._id;
   const firstName = user?.firstName;
 
+  const fectChatMessages = async () => {
+    
+    const chat = await axios(BASE_URL + "/chat/"+ targetUserId, {withCredentials: true});
+
+     const chatMessages = chat?.data?.messages.map((msg) => ({
+    firstName: msg?.senderId?.firstName,
+    text: msg.text
+  }));
+  
+    setMessages(chatMessages);
+  
+  };
+
+
+  useEffect(() => { 
+    fectChatMessages();
+  }, []);
+
   useEffect(() => {
     if (!userId || !targetUserId) return;
     const socket = createSocketConnection();
@@ -20,7 +40,7 @@ const Chat = () => {
     socket.emit("joinChat", { firstName, userId, targetUserId });
 
     socket.on("receiveMessage", ({firstName, text }) => {
-      console.log(firstName + " hyn ye hi ha" + text);
+      
       setMessages((messages) => [...messages, { firstName, text }]);
       // setMessages([{firstName, text}])
       
@@ -47,18 +67,18 @@ const Chat = () => {
                 flex flex-col rounded-2xl shadow-lg bg-gray-900">
 
   {/* Header */}
-  <div className="px-6 py-4 border-b border-gray-700 flex items-center justify-between bg-gray-800 rounded-t-2xl">
+  <div className="px-6 py-4 border-b border-gray-700 flex items-center justify-between bg-gray-800 rounded-t-2xl ">
     <h2 className="text-lg md:text-xl font-semibold text-white">
-      Chat
+      Chat 
     </h2>
     
   </div>
 
   {/* Messages */}
-  <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4 bg-gray-800">
+  <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4 bg-gray-800 ">
     {messages.map((msg, index) => (
-      <div key={index} className="flex flex-col max-w-[85%]">
-        <span className="text-xs text-gray-400 mb-1 font-medium">
+      <div key={index} className={"flex flex-col " + (msg.firstName === user.firstName ? "chat-end" : "chat-start")}>
+        <span className="text-xs text-gray-400 mb-1 font-medium ">
           {msg?.firstName}
         </span>
         <div className="bg-gray-700 border border-gray-600 px-4 py-2 

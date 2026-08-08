@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import axios from "axios";
-import { BASE_URL } from "../utils/constants";
+import { BASE_URL, getProfileImageUrl } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addRequests, removeRequest } from "../utils/requests";
+import GlassPanel from "./ui/GlassPanel";
 
 const Requests = () => {
   const dispatch = useDispatch();
@@ -10,7 +11,7 @@ const Requests = () => {
 
   const reviewRequest = async (status, _id) => {
     try {
-      const res = await axios.post(
+      await axios.post(
         BASE_URL + "/request" + "/" + status + "/" + _id,
         {},
         { withCredentials: true }
@@ -27,63 +28,51 @@ const Requests = () => {
     });
     dispatch(addRequests(res.data.data));
   };
+
   useEffect(() => {
     fetchRequests();
   }, []);
 
-  if (!requests) return;
-  if (requests.length === 0)
+  if (!requests) return null;
+  if (requests.length === 0) {
     return (
-      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-center m-2 sm:m-4 p-2 sm:p-4">
-        No Requests Available
-      </h1>
+      <GlassPanel className="mx-auto max-w-3xl px-6 py-12 text-center">
+        <h1 className="text-2xl font-semibold text-white sm:text-3xl">No requests right now</h1>
+        <p className="mt-3 text-sm text-slate-300 sm:text-base">Your inbox is calm and clear.</p>
+      </GlassPanel>
     );
-  return (
-    <div className="text-center px-2 sm:px-4 md:px-6 py-4 sm:py-6">
-      <h1 className="text-2xl sm:text-3xl md:text-4xl m-2 sm:m-4 p-2 sm:p-4 font-bold"> All Requests</h1>
+  }
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-7xl mx-auto">
+  return (
+    <div className="animate-float-in">
+      <div className="mb-6 text-center sm:text-left">
+        <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">Requests</p>
+        <h1 className="mt-2 text-3xl font-semibold text-white sm:text-4xl">Incoming invites</h1>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {requests.map((request) => {
-          const { _id, firstName, lastName, age, about, photoUrl } =
-            request.fromUserId;
-          console.log(firstName);
+          const { _id, firstName, lastName, age, about, photoUrl } = request.fromUserId;
 
           return (
-            <div
-              key={_id}
-              className="bg-base-300 rounded-xl p-3 sm:p-4 md:p-6 flex flex-col items-center sm:items-start gap-3 sm:gap-4 shadow-sm"
-            >
-              <div className="flex items-center sm:items-start gap-3 sm:gap-4 w-full">
-                <div className="flex-shrink-0">
-                  <img
-                    className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 rounded-full object-cover"
-                    src={photoUrl}
-                    alt={`${firstName} ${lastName}`}
-                  />
-                </div>
-                <div className="flex-1 text-center sm:text-left font-serif">
-                  <h1 className="font-bold text-base sm:text-lg md:text-xl mb-1 sm:mb-2">
-                    {firstName + " " + lastName}
-                  </h1>
-                  {age && <p className="text-xs sm:text-sm md:text-base text-base-content/70 mb-1">Age: {age}</p>}
-                  <p className="text-xs sm:text-sm md:text-base">{about}</p>
+            <GlassPanel key={_id} className="p-4 sm:p-5">
+              <div className="flex items-center gap-3">
+                <img className="h-16 w-16 rounded-full object-cover sm:h-20 sm:w-20" src={getProfileImageUrl(photoUrl)} alt={`${firstName} ${lastName}`} />
+                <div>
+                  <h2 className="text-lg font-semibold text-white">{firstName + " " + lastName}</h2>
+                  <p className="text-sm text-slate-400">{age ? `${age} yrs` : "Developer"}</p>
                 </div>
               </div>
-              <div className="flex gap-2 sm:gap-3 w-full sm:w-auto justify-center sm:justify-end mt-2 sm:mt-0">
-                <button
-                  className="btn btn-primary text-xs sm:text-sm md:text-base px-3 sm:px-4 md:px-6 flex-1 sm:flex-initial"
-                  onClick={() => reviewRequest("rejected", request._id)}
-                >
+              <p className="mt-4 line-clamp-3 text-sm leading-6 text-slate-300">{about || "Would love to connect and collaborate."}</p>
+              <div className="mt-5 flex gap-2">
+                <button className="flex-1 rounded-2xl border border-rose-400/30 bg-rose-500/10 px-3 py-2 text-sm font-semibold text-rose-200" onClick={() => reviewRequest("rejected", request._id)}>
                   Reject
                 </button>
-                <button
-                  className="btn btn-secondary text-xs sm:text-sm md:text-base px-3 sm:px-4 md:px-6 flex-1 sm:flex-initial"
-                  onClick={() => reviewRequest("accepted", request._id)}
-                >
+                <button className="flex-1 rounded-2xl bg-gradient-to-r from-cyan-500 to-violet-500 px-3 py-2 text-sm font-semibold text-white" onClick={() => reviewRequest("accepted", request._id)}>
                   Accept
                 </button>
               </div>
-            </div>
+            </GlassPanel>
           );
         })}
       </div>

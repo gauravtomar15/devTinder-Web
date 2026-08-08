@@ -4,6 +4,7 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
+import GlassPanel from "./ui/GlassPanel";
 
 const EditProfile = ({ user }) => {
   const [firstName, setFirstName] = useState(user.firstName || "");
@@ -14,7 +15,47 @@ const EditProfile = ({ user }) => {
   const [photoUrl, setPhotourl] = useState(user.photoUrl || "");
   const [error, setError] = useState("");
   const [showToast, setShowToast] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
   const dispatch = useDispatch();
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"];
+    if (!allowedTypes.includes(file.type)) {
+      setUploadError("Only JPEG, JPG, PNG, WEBP, and GIF images are allowed.");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError("Image must be smaller than 5MB.");
+      return;
+    }
+
+    setUploadError("");
+    setUploading(true);
+
+    const formData = new FormData();
+    formData.append("photo", file);
+
+    try {
+      const res = await axios.post(BASE_URL + "/profile/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
+      const updatedUser = res?.data?.data;
+      setPhotourl(updatedUser.photoUrl);
+      dispatch(addUser(updatedUser));
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2000);
+    } catch (err) {
+      setUploadError(err?.response?.data?.error || "Failed to upload image. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const saveInfo = async () => {
     setError("");
@@ -24,111 +65,88 @@ const EditProfile = ({ user }) => {
         { firstName, lastName, age, gender, about, photoUrl },
         { withCredentials: true }
       );
-      console.log(res)
-
       dispatch(addUser(res?.data?.data));
       setShowToast(true);
       setTimeout(() => {
         setShowToast(false);
       }, 2000);
     } catch (err) {
-      console.log(err.message+"yes");
+      setError(err?.message || "Unable to update profile.");
     }
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 md:gap-8 mx-2 sm:mx-4 md:mx-6 lg:mx-10 my-4 sm:my-6 md:my-8 lg:my-10">
-      <div className="flex justify-center my-4 sm:my-6 md:my-8 lg:my-10 w-full lg:w-auto">
-        <div className="flex justify-center mx-2 sm:mx-4 md:mx-6 lg:mx-10 w-full">
-          <div className="card bg-base-300 w-full max-w-sm sm:max-w-md md:w-96 shadow-xl">
-            <div className="card-body px-4 sm:px-6">
-              <h2 className="card-title justify-center text-lg sm:text-xl md:text-2xl">Edit Profile</h2>
-              <div>
-                <label className="form-control w-full my-2">
-                  <div className="label">
-                    <span className="label-text text-sm sm:text-base">First Name:</span>
-                  </div>
-                  <input
-                    type="text"
-                    value={firstName}
-                    className="input input-bordered w-full text-sm sm:text-base"
-                    onChange={(e) => setFirstName(e.target.value)}
-                  />
-                </label>
-                <label className="form-control w-full my-2">
-                  <div className="label">
-                    <span className="label-text text-sm sm:text-base">Last Name:</span>
-                  </div>
-                  <input
-                    type="text"
-                    value={lastName}
-                    className="input input-bordered w-full text-sm sm:text-base"
-                    onChange={(e) => setLastName(e.target.value)}
-                  />
-                </label>
-                <label className="form-control w-full my-2">
-                  <div className="label">
-                    <span className="label-text text-sm sm:text-base">Photo URL:</span>
-                  </div>
-                  <input
-                    type="text"
-                    value={photoUrl}
-                    className="input input-bordered w-full text-sm sm:text-base"
-                    onChange={(e) => setPhotourl(e.target.value)}
-                  /> 
-                </label>
-                <label className="form-control w-full my-2">
-                  <div className="label">
-                    <span className="label-text text-sm sm:text-base">Age:</span>
-                  </div>
-                  <input
-                    type="text"
-                    value={age}
-                    className="input input-bordered w-full text-sm sm:text-base"
-                    onChange={(e) => setAge(e.target.value)}
-                  />
-                </label>
-                <label className="form-control w-full my-2">
-                  <div className="label">
-                    <span className="label-text text-sm sm:text-base">Gender:</span>
-                  </div>
-                  <input
-                    type="text"
-                    value={gender}
-                    className="input input-bordered w-full text-sm sm:text-base"
-                    onChange={(e) => setGender(e.target.value)}
-                  />
-                </label>
-                <label className="form-control w-full my-2">
-                  <div className="label">
-                    <span className="label-text text-sm sm:text-base">About:</span>
-                  </div>
-                  <input
-                    type="text"
-                    value={about}
-                    className="input input-bordered w-full text-sm sm:text-base"
-                    onChange={(e) => setAbout(e.target.value)}
-                  />
-                </label>
-              </div>
-              <p className="text-red-500 text-xs sm:text-sm">{error}</p>
-              <div className="card-actions justify-center m-2">
-                <button className="btn btn-primary w-full sm:w-auto text-sm sm:text-base" onClick={saveInfo}>
-                  Save Profile
-                </button>
-              </div>
-            </div>
-          </div>
+    <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+      <GlassPanel className="p-4 sm:p-6 lg:p-8">
+        <div className="mb-6">
+          <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">Profile</p>
+          <h2 className="mt-2 text-3xl font-semibold text-white">Shape your public presence</h2>
+          <p className="mt-2 text-sm text-slate-300 sm:text-base">Keep your details polished while preserving the same backend flow.</p>
         </div>
-      </div>
-      <div className="w-full lg:w-auto flex justify-center">
-        <UserCard user={{ firstName, lastName, age, gender, about , photoUrl }} />
+
+        <div className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="block">
+              <span className="mb-2 block text-sm text-slate-300">First Name</span>
+              <input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="w-full rounded-2xl border border-white/10 bg-slate-950/50 px-4 py-3 text-white outline-none ring-0" />
+            </label>
+            <label className="block">
+              <span className="mb-2 block text-sm text-slate-300">Last Name</span>
+              <input value={lastName} onChange={(e) => setLastName(e.target.value)} className="w-full rounded-2xl border border-white/10 bg-slate-950/50 px-4 py-3 text-white outline-none ring-0" />
+            </label>
+          </div>
+
+          <div className="block">
+            <span className="mb-2 block text-sm font-medium text-slate-300">Profile Photo</span>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+              <label className="flex flex-1 cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-white/20 bg-slate-950/40 p-4 transition duration-300 hover:border-cyan-400/40 hover:bg-slate-950/60">
+                <div className="flex flex-col items-center justify-center gap-1.5 text-center">
+                  <svg className="h-6 w-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span className="text-sm font-medium text-slate-200">
+                    {uploading ? "Uploading..." : "Click or drag to upload"}
+                  </span>
+                  <span className="text-xs text-slate-400">JPEG, PNG, WEBP, GIF (Max 5MB)</span>
+                </div>
+                <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" disabled={uploading} />
+              </label>
+            </div>
+            {uploadError && <p className="mt-2 text-xs text-rose-300">{uploadError}</p>}
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="block">
+              <span className="mb-2 block text-sm text-slate-300">Age</span>
+              <input value={age} onChange={(e) => setAge(e.target.value)} className="w-full rounded-2xl border border-white/10 bg-slate-950/50 px-4 py-3 text-white outline-none ring-0" />
+            </label>
+            <label className="block">
+              <span className="mb-2 block text-sm text-slate-300">Gender</span>
+              <input value={gender} onChange={(e) => setGender(e.target.value)} className="w-full rounded-2xl border border-white/10 bg-slate-950/50 px-4 py-3 text-white outline-none ring-0" />
+            </label>
+          </div>
+
+          <label className="block">
+            <span className="mb-2 block text-sm text-slate-300">About</span>
+            <textarea value={about} rows="4" onChange={(e) => setAbout(e.target.value)} className="w-full rounded-2xl border border-white/10 bg-slate-950/50 px-4 py-3 text-white outline-none ring-0" />
+          </label>
+
+          {error && <p className="text-sm text-rose-300">{error}</p>}
+
+          <button className="w-full rounded-2xl bg-gradient-to-r from-cyan-500 to-violet-500 px-4 py-3 font-semibold text-white shadow-lg shadow-cyan-500/20" onClick={saveInfo}>
+            Save profile
+          </button>
+        </div>
+      </GlassPanel>
+
+      <div className="flex items-start justify-center">
+        <UserCard user={{ firstName, lastName, age, gender, about, photoUrl }} />
       </div>
 
       {showToast && (
-        <div className="toast toast-top toast-center ">
-          <div className="alert alert-success">
-            <span>Profile Updated successfully.</span>
+        <div className="toast toast-top toast-center">
+          <div className="alert alert-success rounded-2xl border border-emerald-400/20 bg-emerald-500/90 text-emerald-950">
+            <span>Profile updated successfully.</span>
           </div>
         </div>
       )}

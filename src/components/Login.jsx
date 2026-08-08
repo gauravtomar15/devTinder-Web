@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
+import GlassPanel from "./ui/GlassPanel";
 
 const Login = () => {
   const [email, setEmailId] = useState("");
@@ -13,152 +14,133 @@ const Login = () => {
   const [isLoggin, setIsLogin] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const [error, setError] = useState("");
 
   const handleLogin = async () => {
     try {
-      console.log("clicked");
+      setError("");
       const result = await axios.post(
         BASE_URL + "/login",
-        {
-          email,
-          password,
-        },
-        {
-          withCredentials: true,
-        },
+        { email, password },
+        { withCredentials: true }
       );
       dispatch(addUser(result.data));
       return navigate("/");
     } catch (err) {
-      setError(err?.response?.data);
+      setError(err?.response?.data || "Failed to login. Please check credentials.");
     }
   };
+
   const handleSignUp = async () => {
     try {
+      setError("");
       const res = await axios.post(
         BASE_URL + "/signUp",
         { firstName, lastName, email, password },
         { withCredentials: true },
       );
-      console.log(res.data);
       dispatch(addUser(res.data));
       return navigate("/profile");
     } catch (err) {
-      console.error(err.message);
+      setError(err?.response?.data || "Failed to sign up. Please try again.");
     }
   };
+
   return (
-    <div className="flex justify-center m-4 sm:m-6 md:m-8 px-2 sm:px-4">
-      <div className="card bg-base-300 w-full max-w-sm sm:max-w-md md:w-96 shadow-sm">
-        <div className="card-body items-center gap-4 sm:gap-5 md:gap-6">
-          <h2 className="card-title font-bold text-base sm:text-lg md:text-xl">
-            {isLoggin ? "Login" : "SignUp"}
+    <div className="flex min-h-[75vh] items-center justify-center px-4 py-8 animate-float-in">
+      <GlassPanel className="w-full max-w-md p-6 sm:p-8 hover:translate-y-0" hover={false}>
+        <div className="flex flex-col items-center text-center mb-6">
+          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 via-sky-500 to-violet-500 text-3xl shadow-lg shadow-cyan-500/20 mb-4 animate-pulse">
+            ⚡
+          </span>
+          <h2 className="text-3xl font-bold text-white tracking-tight">
+            {isLoggin ? "Welcome back" : "Create your account"}
           </h2>
+          <p className="mt-2 text-sm text-slate-400">
+            {isLoggin
+              ? "Sign in to connect with skilled developers nearby"
+              : "Join a curated space for tech collaborations"}
+          </p>
+        </div>
+
+        <div className="space-y-4">
           {!isLoggin && (
-            <>
-              <label className="form-control w-full max-w-xs">
+            <div className="grid grid-cols-2 gap-4">
+              <label className="block">
+                <span className="mb-2 block text-xs font-medium text-slate-300 uppercase tracking-wider">First Name</span>
                 <input
-                  placeholder="First Name:"
                   type="text"
+                  placeholder="John"
                   value={firstName}
-                  className="input input-bordered w-full max-w-xs text-sm sm:text-base"
+                  className="w-full rounded-2xl border border-white/10 bg-slate-950/50 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none focus:border-cyan-500/40 focus:ring-1 focus:ring-cyan-500/20"
                   onChange={(e) => setFirstName(e.target.value)}
                 />
               </label>
-              <label className="form-control w-full max-w-xs">
+              <label className="block">
+                <span className="mb-2 block text-xs font-medium text-slate-300 uppercase tracking-wider">Last Name</span>
                 <input
-                  placeholder="Last Name:"
                   type="text"
+                  placeholder="Doe"
                   value={lastName}
-                  className="input input-bordered w-full max-w-xs text-sm sm:text-base"
+                  className="w-full rounded-2xl border border-white/10 bg-slate-950/50 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none focus:border-cyan-500/40 focus:ring-1 focus:ring-cyan-500/20"
                   onChange={(e) => setLastName(e.target.value)}
                 />
               </label>
-            </>
+            </div>
           )}
-          <label className="input validator w-full max-w-xs">
-            <svg
-              className="h-[1em] opacity-50"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-            >
-              <g
-                strokeLinejoin="round"
-                strokeLinecap="round"
-                strokeWidth="2.5"
-                fill="none"
-                stroke="currentColor"
-              >
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </g>
-            </svg>
+
+          <label className="block">
+            <span className="mb-2 block text-xs font-medium text-slate-300 uppercase tracking-wider">Email Address</span>
+            <div className="relative">
+              <input
+                type="email"
+                placeholder="dev@tinder.com"
+                value={email}
+                onChange={(e) => setEmailId(e.target.value)}
+                className="w-full rounded-2xl border border-white/10 bg-slate-950/50 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none focus:border-cyan-500/40 focus:ring-1 focus:ring-cyan-500/20"
+              />
+            </div>
+          </label>
+
+          <label className="block">
+            <span className="mb-2 block text-xs font-medium text-slate-300 uppercase tracking-wider">Password</span>
             <input
-              type="text"
-              required
-              placeholder="Email ID"
-              value={email}
-              onChange={(e) => setEmailId(e.target.value)}
-              title="Only letters, numbers or dash"
-              className="text-sm sm:text-base"
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded-2xl border border-white/10 bg-slate-950/50 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none focus:border-cyan-500/40 focus:ring-1 focus:ring-cyan-500/20"
+              onKeyDown={(e) => e.key === "Enter" && (isLoggin ? handleLogin() : handleSignUp())}
             />
           </label>
 
-          <label className="input validator w-full max-w-xs">
-            <svg
-              className="h-[1em] opacity-50"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-            >
-              <g
-                strokeLinejoin="round"
-                strokeLinecap="round"
-                strokeWidth="2.5"
-                fill="none"
-                stroke="currentColor"
-              >
-                <path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path>
-                <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
-              </g>
-            </svg>
-            <input
-              type="password"
-              required
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
-              title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
-              className="text-sm sm:text-base"
-            />
-          </label>
-          <p className="text-red-500 text-xs sm:text-sm text-center">{error}</p>
-          <div className="card-actions justify-center w-full">
-            <button
-              className="btn btn-primary w-full sm:w-auto text-sm sm:text-base px-6"
-              onClick={isLoggin ? handleLogin : handleSignUp}
-            >
-              {isLoggin ? "Login" : "SignUp"}
-            </button>
-          </div>
-          <p
-            className="cursor-pointer text-sm sm:text-base md:text-lg font-bold text-center"
-            onClick={() => setIsLogin((value) => !value)}
+          {error && (
+            <p className="text-xs text-rose-300 text-center font-medium bg-rose-500/10 border border-rose-500/20 rounded-xl py-2 px-3">
+              {error}
+            </p>
+          )}
+
+          <button
+            className="w-full rounded-2xl bg-gradient-to-r from-cyan-500 to-violet-500 px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-cyan-500/10 transition-all duration-300 hover:opacity-95 hover:shadow-cyan-500/20 active:scale-[0.99]"
+            onClick={isLoggin ? handleLogin : handleSignUp}
           >
-            {isLoggin ? (
-              <div>
-                New User? <span className="text-red-500">SignUp Here</span>
-              </div>
-            ) : (
-              <div>
-                Existing User <span className="text-red-500">Login Here</span>
-              </div>
-            )}
+            {isLoggin ? "Sign In" : "Sign Up"}
+          </button>
+
+          <p className="text-center text-sm text-slate-400 mt-4">
+            {isLoggin ? "New to DevTinder?" : "Already have an account?"}{" "}
+            <button
+              onClick={() => {
+                setError("");
+                setIsLogin((prev) => !prev);
+              }}
+              className="font-semibold text-cyan-400 hover:text-cyan-300 underline transition duration-200"
+            >
+              {isLoggin ? "Sign Up Here" : "Login Here"}
+            </button>
           </p>
         </div>
-      </div>
+      </GlassPanel>
     </div>
   );
 };

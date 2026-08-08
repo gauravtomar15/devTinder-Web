@@ -1,84 +1,76 @@
 import React, { useEffect } from "react";
 import axios from "axios";
-import { BASE_URL } from "../utils/constants";
+import { BASE_URL, getProfileImageUrl } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addConnection } from "../utils/connectionSlice";
 import { Link } from "react-router-dom";
+import GlassPanel from "./ui/GlassPanel";
 
 const Connections = () => {
   const connections = useSelector((store) => store.connection);
   const dispatch = useDispatch();
-  // console.log(connections);
 
   const fetchConnetions = async () => {
     try {
       const res = await axios.get(BASE_URL + "/user/connections", {
         withCredentials: true,
       });
-      // console.log(res?.data?.data);
-      console.log(res);
       dispatch(addConnection(res?.data?.data));
     } catch (err) {
       console.error(err.message);
     }
   };
+
   useEffect(() => {
     fetchConnetions();
   }, []);
 
-  if (!connections) return;
-  if (connections.length === 0)
+  if (!connections) return null;
+  if (connections.length === 0) {
     return (
-      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-center m-2 sm:m-4 p-2 sm:p-4">
-        No Connection Available
-      </h1>
+      <GlassPanel className="mx-auto max-w-3xl px-6 py-12 text-center">
+        <h1 className="text-2xl font-semibold text-white sm:text-3xl">No connections yet</h1>
+        <p className="mt-3 text-sm text-slate-300 sm:text-base">Start exploring and build your circle of collaborators.</p>
+      </GlassPanel>
     );
+  }
+
   return (
-    <div className="text-center px-2 sm:px-4 md:px-6 py-4 sm:py-6">
-      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
-        My Connections
-      </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-7xl mx-auto">
+    <div className="animate-float-in">
+      <div className="mb-6 text-center sm:text-left">
+        <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">Network</p>
+        <h1 className="mt-2 text-3xl font-semibold text-white sm:text-4xl">Your curated connections</h1>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {connections.map((connection, index) => {
-          const {_id, firstName, lastName, age, about, photoUrl } = connection;
+          const { _id, firstName, lastName, age, about, photoUrl } = connection;
 
           return (
-            <div
-              key={index}
-              className="bg-base-300 rounded-xl p-3 sm:p-4 md:p-6 flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4 shadow-sm"
-            >
-              <div className="flex-shrink-0">
-                <img
-                  className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 rounded-full object-cover"
-                  src={photoUrl}
-                  alt={`${firstName} ${lastName}`}
-                />
-              </div>
-              <div className="flex-1 text-center sm:text-left font-serif">
-                <div className="flex items-center justify-center sm:justify-start gap-2 mb-1 sm:mb-2">
-                  <h1 className="font-bold text-base sm:text-lg md:text-xl">
-                    {firstName + " " + lastName}
-                  </h1>
-                  {connection?.isPremium && (
-                    <img
-                      className="h-4 w-4 sm:h-5 sm:w-5 rounded-full flex-shrink-0"
-                      src="https://media.istockphoto.com/id/1344841941/vector/blue-verified-account-icon-approved-profile-sign-tick-in-rounded-corners-star-top-page-logo.jpg?s=612x612&w=0&k=20&c=Ys81LaNf8DkzKVvB03y0hDQBkkkP5jrRK9lX4htlfRk="
-                      alt="Premium badge"
-                    />
-                  )}
+            <GlassPanel key={index} className="p-4 sm:p-5">
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <img className="h-16 w-16 rounded-full object-cover sm:h-20 sm:w-20" src={getProfileImageUrl(photoUrl)} alt={`${firstName} ${lastName}`} />
+                  <span className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-slate-900 bg-emerald-400" />
                 </div>
-
-                {age && (
-                  <p className="text-xs sm:text-sm md:text-base text-base-content/70 mb-1">
-                    Age: {age}
-                  </p>
-                )}
-                <p className="text-xs sm:text-sm md:text-base">{about}</p>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <h2 className="truncate text-lg font-semibold text-white">{firstName + " " + lastName}</h2>
+                    {connection?.isPremium && <span className="text-cyan-300">✓</span>}
+                  </div>
+                  <p className="text-sm text-slate-400">{age ? `${age} yrs` : "Developer"}</p>
+                </div>
               </div>
-             <Link to={"/chat/" + _id }>
-               <button className="btn btn-primary btn-sm mt-2">Chat</button>
-             </Link>
-            </div>
+
+              <p className="mt-4 line-clamp-3 text-sm leading-6 text-slate-300">{about || "A thoughtful collaborator with plenty to share."}</p>
+
+              <div className="mt-5 flex items-center justify-between">
+                <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs text-slate-300">Online now</span>
+                <Link to={"/chat/" + _id}>
+                  <button className="rounded-full bg-gradient-to-r from-cyan-500 to-violet-500 px-4 py-2 text-sm font-semibold text-white">Chat</button>
+                </Link>
+              </div>
+            </GlassPanel>
           );
         })}
       </div>
